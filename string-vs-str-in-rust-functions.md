@@ -31,11 +31,11 @@ fn main() {
 
 * `&`符号是一个引用类型，意味着我们借用这个变量。当print_me用完那个变量，所有权将返回给原来的拥有者。除非我们有很好的理由将message变量的所有权转移到我们的函数，不然我们应该选择借用。
 * 使用引用更有效。使用String的message意味着程序必须复制该值。使用一个引用时，如`&str`，不需要复制。
-* 一个String类型可以神奇地变成了一个&str类型当使用Defer特质和类型强制。这将使一个例子更有意义。
+* 使用[Deref](http://doc.rust-lang.org/nightly/std/ops/trait.Deref.html)`trait`和强制多态神奇地使一个String类型变成了一个&str类型。这将使一个字符串更有意义。
 
-##Deref Coercion例子：
+##Deref强制多态例子：
 
-这个例子通过四种不同的方式创建strings，并且都可以成功调用print_me函数。使这一切可工作的关键是通过引用传值。我们通过`&String`传递，而不是通过把owned_string作为一个String传递给print_me。当编译器看到一个&String传递给一个采取&Str的函数，它强制`&String`转为`&Str`。这一强制同时也发生在引用计数和自动引用计数的字符串那里。String变量已经是一个引用，所以当调用print_me（string）函数时就没有必要使用&。知道了这一点，我们不再需要调用我们`.to_string()`来制造一些垃圾到我们的代码。
+这个例子通过四种不同的方式创建strings，并且都可以成功调用print_me函数。使这一切可工作的关键是通过引用传值。我们通过`&String`传递，而不是通过把owned_string作为一个String传递给print_me。当编译器看到一个&String传递给一个采取&str的函数，它强制`&String`转为`&str`。这一强制同时也发生在引用计数和自动引用计数的字符串那里。String变量已经是一个引用，所以当调用print_me（string）函数时就没有必要使用&。知道了这一点，我们不再需要调用我们`.to_string()`来制造一些垃圾到我们的代码。
 
 ```rust
 fn print_me(msg: &str) { println!("msg = {}", msg); }
